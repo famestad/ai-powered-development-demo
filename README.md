@@ -8,6 +8,8 @@ FAST is designed with security and vibe-codability as primary tenets. Best pract
 
 With FAST as a starting point and development framework, delivery scientists and engineers will accelerate their development process and deliver production quality AgentCore code following architecture and security best practices without having to learn any frontend or infrastructure (cdk) code.
 
+Have a question about how FAST works? Consider asking DeepWiki:
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/awslabs/fullstack-solution-template-for-agentcore)
 
 ## FAST Baseline System
 
