@@ -48,13 +48,13 @@ What comes next? That's up to you, the developer. With your requirements in mind
 
 ## Architecture
 
-![Architecture Diagram](docs/architecture-diagram/FAST-architecture-20251201.png)
+![Architecture Diagram](docs/architecture-diagram/FAST-architecture-20260302.png)
 
-The out-of-the-box architecture is shown above. Note that Amazon Cognito is used in four places:
-1. User-based login to the frontend web application on CloudFront
-2. Token-based authentication for the frontend to access AgentCore Runtime
-3. Token-based authentication for the agents in AgentCore Runtime to access AgentCore Gateway
-4. Token-based authentication when making API requests to API Gateway.
+The out-of-the-box architecture is shown above. The diagram illustrates the authentication flows across the stack:
+1. User login to the frontend (Cognito User Pool — Authorization Code grant): The user authenticates with Cognito via the web application hosted on AWS Amplify. Cognito issues a JWT access token for the session.
+2. Frontend to AgentCore Runtime (Cognito User Pool JWT validation): The frontend passes the user's JWT in the Authorization header. The Runtime validates the token against the Cognito User Pool.
+3. AgentCore Runtime to AgentCore Gateway (OAuth2 Client Credentials / M2M): The Runtime authenticates as a service using the OAuth2 Client Credentials grant — independent of the user's identity. AgentCore Identity manages token retrieval via the Token Vault.
+4. Frontend to API Gateway (Cognito User Pool JWT validation): API requests are authenticated using a Cognito User Pools Authorizer with the same user JWT from Flow 1.
 
 ### Tech Stack
 
@@ -67,23 +67,40 @@ The out-of-the-box architecture is shown above. Note that Amazon Cognito is used
 
 ```
 fullstack-agentcore-solution-template/
-├── frontend/                 # React frontend application
+├── .amazonq/               # Amazon Q assistant rules
+├── .github/                # GitHub Actions workflows
+│   └── workflows/
+├── docker/                 # Docker development environment
+│   ├── docker-compose.yml  # Local development stack
+│   └── Dockerfile.frontend.dev # Frontend development container
+├── frontend/               # React frontend application
 │   ├── src/
-│   │   ├── app/            # app router pages
+│   │   ├── app/            # Application pages
 │   │   ├── components/     # React components (shadcn/ui)
 │   │   ├── hooks/          # Custom React hooks
 │   │   ├── lib/            # Utility libraries
 │   │   │   └── agentcore-client/ # AgentCore streaming client
+│   │   ├── routes/         # React Router routes
 │   │   ├── services/       # API service layers
+│   │   ├── styles/         # Global styles
+│   │   ├── test/           # Frontend tests
 │   │   └── types/          # TypeScript type definitions
-│   ├── public/             # Static assets and aws-exports.json
+│   ├── public/             # Static assets
 │   ├── components.json     # shadcn/ui configuration
-│   ├── Dockerfile.dev      # Development container configuration
+│   ├── vite.config.ts      # Vite configuration
 │   └── package.json
-├── infra-cdk/               # CDK infrastructure code
+├── infra-cdk/              # CDK infrastructure code
 │   ├── lib/                # CDK stack definitions
+│   │   ├── utils/          # Shared CDK utilities
+│   │   ├── amplify-hosting-stack.ts
+│   │   ├── backend-stack.ts
+│   │   ├── cognito-stack.ts
+│   │   └── fast-main-stack.ts
 │   ├── bin/                # CDK app entry point
 │   ├── lambdas/            # Lambda function code
+│   │   ├── oauth2-provider/ # OAuth2 Credential Provider lifecycle
+│   │   ├── feedback/       # Feedback API handler
+│   │   └── zip-packager/   # Runtime ZIP packager
 │   └── config.yaml         # Deployment configuration
 ├── patterns/               # Agent pattern implementations
 │   ├── strands-single-agent/ # Basic strands agent pattern
@@ -91,47 +108,53 @@ fullstack-agentcore-solution-template/
 │   │   ├── strands_code_interpreter.py # Code Interpreter wrapper
 │   │   ├── requirements.txt # Agent dependencies
 │   │   └── Dockerfile      # Container configuration
-│   └── langgraph-single-agent/ # LangGraph agent pattern
-│       ├── langgraph_agent.py # Agent implementation
-│       ├── requirements.txt # Agent dependencies
-│       └── Dockerfile      # Container configuration
+│   ├── langgraph-single-agent/ # LangGraph agent pattern
+│   │   ├── langgraph_agent.py # Agent implementation
+│   │   ├── requirements.txt # Agent dependencies
+│   │   └── Dockerfile      # Container configuration
+│   └── utils/              # Shared agent utilities
+│       ├── auth.py         # Authentication helpers
+│       └── ssm.py          # SSM parameter helpers
 ├── tools/                  # Reusable tools (framework-agnostic)
 │   └── code_interpreter/   # AgentCore Code Interpreter integration
 │       └── code_interpreter_tools.py # Core implementation
 ├── gateway/                # Gateway utilities and tools
-│   ├── tools/              # Gateway tool implementations
-│   └── utils/              # Gateway utility functions
-├── scripts/                # Deployment and test scripts
+│   └── tools/              # Gateway tool implementations
+│       └── sample_tool/    # Example Gateway tool
+├── scripts/                # Deployment and utility scripts
 │   ├── deploy-frontend.py  # Cross-platform frontend deployment
-│   └── test-*.py          # Various test utilities
+│   └── utils.py            # Shared script utilities
+├── test-scripts/           # Testing scripts
+│   ├── test-agent.py       # Agent testing
+│   ├── test-feedback-api.py # Feedback API testing
+│   ├── test-gateway.py     # Gateway testing
+│   └── test-memory.py      # Memory testing
+├── tests/                  # Test suite
+│   ├── unit/               # Unit tests
+│   ├── integration/        # Integration tests
+│   └── conftest.py         # Pytest configuration
 ├── docs/                   # Documentation source files
-│   ├── .nav.yml            # Navigation configuration
-│   ├── index.md            # Documentation landing page
+│   ├── architecture-diagram/ # Architecture diagrams
 │   ├── DEPLOYMENT.md       # Deployment guide
 │   ├── LOCAL_DEVELOPMENT.md # Local development guide
 │   ├── AGENT_CONFIGURATION.md # Agent setup guide
 │   ├── MEMORY_INTEGRATION.md # Memory integration guide
 │   ├── GATEWAY.md          # Gateway integration guide
+│   ├── RUNTIME_GATEWAY_AUTH.md # M2M authentication workflow
 │   ├── STREAMING.md        # Streaming implementation guide
 │   ├── TOOL_AC_CODE_INTERPRETER.md # Code Interpreter guide
-│   ├── VERSION_BUMP_PLAYBOOK.md # Version management
-│   └── architecture-diagram/ # Architecture diagrams
+│   └── VERSION_BUMP_PLAYBOOK.md # Version management
 ├── .mkdocs/                # MkDocs build configuration
 │   ├── mkdocs.yml          # MkDocs configuration
 │   ├── requirements.txt    # Documentation dependencies
-│   ├── Makefile            # Build and deployment commands
-│   └── README.md           # Documentation system overview
-├── public/                 # Generated documentation site (MkDocs output)
-├── tests/                  # Test suite
-│   ├── unit/               # Unit tests
-│   ├── integration/        # Integration tests
-│   └── conftest.py         # Pytest configuration
+│   └── Makefile            # Build and deployment commands
 ├── vibe-context/           # AI coding assistant context and rules
 │   ├── AGENTS.md           # Rules for AI assistants
 │   ├── coding-conventions.md # Code style guidelines
 │   └── development-best-practices.md # Development guidelines
 ├── .kiro/                  # Kiro CLI configuration
-├── docker-compose.yml      # Local development stack
+├── CHANGELOG.md            # Version history
+├── Makefile                # Project-level build commands
 └── README.md
 ```
 
