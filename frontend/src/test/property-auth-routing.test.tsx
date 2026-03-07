@@ -94,7 +94,7 @@ describe("Authentication State Routing", () => {
               access_token: "test-token",
               id_token: "test-id-token",
               profile: { sub: "test-user-id" },
-            } as any,
+            } as unknown,
             isLoading: false,
             error: undefined,
             token: "test-id-token",
@@ -135,7 +135,7 @@ describe("Authentication State Routing", () => {
                   access_token: "test-token",
                   id_token: "test-id-token",
                   profile: { sub: "test-user-id" },
-                } as any)
+                } as unknown)
               : null,
             isLoading: false,
             error: undefined,
@@ -176,7 +176,7 @@ describe("Authentication State Routing", () => {
             access_token: "test-token",
             id_token: "test-id-token",
             profile: { sub: "test-user-id" },
-          } as any,
+          } as unknown,
           isLoading: false,
           error: undefined,
           token: "test-id-token",
