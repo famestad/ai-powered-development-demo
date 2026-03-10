@@ -481,6 +481,14 @@ resource "aws_bedrockagentcore_agent_runtime" "main" {
 
   # Force runtime replacement when agent code changes (zip or docker)
   lifecycle {
+    precondition {
+      condition     = var.backend_network_mode != "VPC" || (var.backend_vpc_id != null && var.backend_vpc_id != "")
+      error_message = "backend_vpc_id is required when backend_network_mode is 'VPC'."
+    }
+    precondition {
+      condition     = var.backend_network_mode != "VPC" || length(var.backend_vpc_subnet_ids) > 0
+      error_message = "backend_vpc_subnet_ids must contain at least one subnet ID when backend_network_mode is 'VPC'."
+    }
     replace_triggered_by = [
       terraform_data.agent_code_hash,
       terraform_data.docker_image_hash,

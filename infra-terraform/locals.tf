@@ -39,20 +39,3 @@ locals {
   api_throttling_burst_limit = 200
 
 }
-
-# =============================================================================
-# VPC Configuration Validation
-# =============================================================================
-# Mirrors the CDK ConfigManager validation: when backend_network_mode is "VPC",
-# backend_vpc_id and backend_vpc_subnet_ids are required.
-
-check "vpc_configuration" {
-  assert {
-    condition     = var.backend_network_mode != "VPC" || (var.backend_vpc_id != null && var.backend_vpc_id != "")
-    error_message = "backend_vpc_id is required when backend_network_mode is 'VPC'."
-  }
-  assert {
-    condition     = var.backend_network_mode != "VPC" || length(var.backend_vpc_subnet_ids) > 0
-    error_message = "backend_vpc_subnet_ids must contain at least one subnet ID when backend_network_mode is 'VPC'."
-  }
-}

@@ -81,11 +81,6 @@ variable "backend_vpc_subnet_ids" {
   description = "List of subnet IDs for VPC network mode. Required when backend_network_mode is 'VPC'. Subnets should be in at least two Availability Zones."
   type        = list(string)
   default     = []
-
-  validation {
-    condition     = length(var.backend_vpc_subnet_ids) == 0 || length(var.backend_vpc_subnet_ids) >= 1
-    error_message = "At least one subnet ID is required when using VPC network mode."
-  }
 }
 
 variable "backend_vpc_security_group_ids" {
