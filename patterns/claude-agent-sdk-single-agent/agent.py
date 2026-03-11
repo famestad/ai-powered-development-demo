@@ -26,6 +26,10 @@ logger = logging.getLogger(__name__)
 
 app = BedrockAgentCoreApp()
 
+# Maps runtimeSessionId -> claude_session_id for conversation resumption.
+# Both are lost if the container restarts, so in-memory storage is sufficient.
+_session_map: dict[str, str] = {}
+
 
 @app.entrypoint
 async def main(payload, context: RequestContext):
@@ -45,7 +49,7 @@ async def main(payload, context: RequestContext):
         return
 
     code_int_session_id = payload.get("code_int_session_id", "")
-    claude_session_id = payload.get("claude_session_id")
+    claude_session_id = _session_map.get(runtime_session_id)
 
     # Extract user ID securely from validated JWT token
     user_id = extract_user_id_from_context(context)
@@ -158,6 +162,8 @@ Your response should:
                                         pass
                 elif isinstance(msg, ResultMessage):
                     logger.info("ResultMessage received, session_id=%s", msg.session_id)
+                    if msg.session_id:
+                        _session_map[runtime_session_id] = msg.session_id
                     yield {"claude_session_id": msg.session_id}
 
     try:
