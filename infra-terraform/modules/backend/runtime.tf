@@ -63,7 +63,7 @@ resource "terraform_data" "docker_image_hash" {
   input = local.is_docker && var.container_uri == null ? sha256(join("", concat(
     [filesha256("${local.pattern_dir}/Dockerfile")],
     [filesha256("${local.pattern_dir}/requirements.txt")],
-    [for f in fileset(local.pattern_dir, "*.py") : filesha256("${local.pattern_dir}/${f}")],
+    [for f in fileset(local.pattern_dir, "**/*.py") : filesha256("${local.pattern_dir}/${f}")],
     [for f in fileset("${local.project_root}/patterns/utils", "**/*.py") : filesha256("${local.project_root}/patterns/utils/${f}")],
     [for f in fileset("${local.project_root}/gateway", "**/*.py") : filesha256("${local.project_root}/gateway/${f}")],
     [for f in fileset("${local.project_root}/tools", "**/*.py") : filesha256("${local.project_root}/tools/${f}")],
