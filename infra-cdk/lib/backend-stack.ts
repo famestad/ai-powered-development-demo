@@ -102,7 +102,7 @@ export class BackendStack extends cdk.NestedStack {
     // Parameters
     this.agentName = new cdk.CfnParameter(this, "AgentName", {
       type: "String",
-      default: "StrandsAgent",
+      default: "FASTAgent",
       description: "Name for the agent runtime",
     })
 
