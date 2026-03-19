@@ -20,7 +20,7 @@ COPY tools/ tools/
 # Copy and install agent-specific requirements first
 COPY patterns/strands-single-agent/requirements.txt requirements.txt
 RUN uv pip install --no-cache -r requirements.txt && \
-    uv pip install --no-cache aws-opentelemetry-distro==0.10.1
+    uv pip install --no-cache aws-opentelemetry-distro==0.16.0
 
 # Install FAST package with only core dependencies (no dev/agent optional deps)
 RUN uv pip install --no-cache -e . --no-deps && \

@@ -30,7 +30,7 @@ COPY tools/ tools/
 # Copy and install agent-specific requirements
 COPY patterns/claude-agent-sdk-single-agent/requirements.txt requirements.txt
 RUN uv pip install --no-cache -r requirements.txt && \
-    uv pip install --no-cache aws-opentelemetry-distro==0.10.1
+    uv pip install --no-cache aws-opentelemetry-distro==0.16.0
 
 # Install FAST package with only core dependencies
 RUN uv pip install --no-cache -e . --no-deps && \
