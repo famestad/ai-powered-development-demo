@@ -80,7 +80,7 @@ Uses `ag-ui-strands` (`StrandsAgent`) to wrap a Strands `Agent`. The agent is cr
 
 **Location**: `agent_patterns/agui-langgraph-agent/`
 
-Uses `copilotkit` (`LangGraphAGUIAgent`) to wrap a LangGraph compiled graph. Uses `ActorAwareLangGraphAgent`, a subclass that rebuilds the graph per-request to ensure fresh Gateway MCP tool connections with valid tokens.
+Uses the `copilotkit` python library (`LangGraphAGUIAgent`) to wrap a LangGraph compiled graph. Uses `ActorAwareLangGraphAgent`, a subclass that rebuilds the graph per-request to ensure fresh Gateway MCP tool connections with valid tokens.
 
 **Includes**: AgentCore Memory (checkpointer), Gateway MCP tools, Code Interpreter, CopilotKit middleware, AG-UI SSE streaming.
 
@@ -116,18 +116,7 @@ No CDK changes are required. The AG-UI patterns deploy as standard HTTP containe
 
 ## CopilotKit Integration
 
-[CopilotKit](https://www.copilotkit.ai/) is a React UI library that natively understands the AG-UI protocol. While FAST's built-in frontend includes a lightweight AG-UI parser for basic chat streaming, CopilotKit provides a much richer set of capabilities for building agent-powered applications:
-
-- **Chat UI components**: Pre-built `<CopilotChat />` and `<CopilotPopup />` components with streaming, markdown rendering, and tool call visualization out of the box
-- **Generative UI**: Agents can render custom React components in the chat via `TOOL_CALL_RESULT` events — tables, charts, forms, or any UI the agent decides to show
-- **Frontend tool calls**: Define tools that execute on the client side (e.g., updating a canvas, modifying app state), which the agent can invoke through the AG-UI protocol
-- **Shared state**: Bidirectional state sync between the agent and the frontend via `STATE_SNAPSHOT` events — the agent can read and write to frontend state (e.g., a todo list, a document editor)
-- **Human-in-the-loop**: Built-in support for agent interrupts where the agent pauses execution and asks the user for confirmation or input before proceeding
-- **Textarea AI suggestions**: `<CopilotTextarea />` provides inline AI-powered autocompletions in any text input
-
-CopilotKit is a separate frontend that can replace the built-in FAST frontend when deeper AG-UI integration is needed. The AG-UI agent patterns in FAST (`agui-strands-agent`, `agui-langgraph-agent`) work as the backend for CopilotKit without any changes — CopilotKit connects to the same `/invocations` endpoint and speaks the same AG-UI protocol.
-
-For a full working example, see [PR #63](https://github.com/awslabs/fullstack-solution-template-for-agentcore/pull/63) which demonstrates CopilotKit integrated with the AG-UI LangGraph pattern, including generative UI, frontend tools, and shared state.
+[CopilotKit](https://www.copilotkit.ai/) is a React UI library that natively understands the AG-UI protocol. While FAST's built-in frontend includes a lightweight AG-UI parser for basic chat streaming, CopilotKit provides a richer set of capabilities for building agent-powered applications. Fullstack FAST applications with deeper CopilotKit integration can be found in the FAST samples repository (coming soon).
 
 ---
 
