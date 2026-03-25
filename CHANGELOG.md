@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-03-25
+
+### Added
+
+- AG-UI agent patterns for both Strands and LangGraph (`patterns/agui-strands-agent/`, `patterns/agui-langgraph-agent/`) with tool support (Gateway, Code Interpreter)
+- AG-UI streaming parser in frontend (`frontend/src/lib/agentcore-client/parsers/agui.ts`)
+- AG-UI integration documentation (`docs/AGUI_INTEGRATION.md`)
+- AgentCore Evaluations integration guide (`docs/AGENTCORE_EVALUATIONS_GUIDE.md`)
+- X-Ray VPC endpoint to private VPC deployment documentation
+
+### Changed
+
+- Restructured existing Strands and LangGraph agent patterns with modular `tools/` directories for Gateway and Code Interpreter
+- Simplified `basic_agent.py` and `langgraph_agent.py` by extracting tool definitions into separate modules
+- Updated OpenTelemetry distro version across all agent pattern Dockerfiles
+
+### Fixed
+
+- API Gateway cache encryption at rest enabled in both CDK and Terraform
+- ASH PR comment artifact consolidation and dependabot auto-merge workflow trigger
+- Security scanner false positive suppressions (nosemgrep/nosec) for CDK path operations, JWT decode, and zip-packager urlopen
+- Added USER directive to `Dockerfile.frontend.dev` (CKV_DOCKER_3)
+
+### Security
+
+- Updated `tj-actions/changed-files` to v47.0.5 (CVE fix for GHSA-mrrh-fwg8-r2c3 and GHSA-mcph-m25j-8j63)
+- Bumped `fast-xml-parser` and `@aws-sdk/xml-builder` in frontend
+- Bumped `flatted` from 3.3.3 to 3.4.2 in frontend
+- Bumped `langgraph` in patterns/langgraph-single-agent
+
 ## [0.4.0] - 2026-03-12
 
 ### Added
