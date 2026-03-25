@@ -47,8 +47,7 @@ export class ConfigManager {
   }
 
   private _loadConfig(configFile: string): AppConfig {
-    // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal — configFile is a hardcoded filename from the CDK app entry point, not user input
-    const configPath = path.join(__dirname, "..", "..", configFile)
+    const configPath = path.join(__dirname, "..", "..", configFile) // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
 
     if (!fs.existsSync(configPath)) {
       throw new Error(`Configuration file ${configPath} does not exist. Please create config.yaml file.`)
@@ -113,13 +112,13 @@ export class ConfigManager {
     return this.config
   }
 
-  // nosemgrep: javascript.lang.security.audit.prototype-pollution.prototype-pollution-loop.prototype-pollution-loop — iterates over a trusted local YAML config object, not user-controlled input
   public get(key: string, defaultValue?: any): any {
     const keys = key.split(".")
     let value: any = this.config
 
     for (const k of keys) {
       if (typeof value === "object" && value !== null && k in value) {
+        // nosemgrep: javascript.lang.security.audit.prototype-pollution.prototype-pollution-loop.prototype-pollution-loop — iterates over a trusted local YAML config object, not user-controlled input
         value = value[k]
       } else {
         return defaultValue

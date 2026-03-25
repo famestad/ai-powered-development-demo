@@ -60,8 +60,9 @@ def extract_user_id_from_context(context: RequestContext) -> str:
 
     # Decode without signature verification — AgentCore Runtime already validated the token.
     # We use options to skip all verification since this is a trusted, pre-validated token.
-    claims = jwt.decode(  # nosec — signature verification intentionally skipped; AgentCore Runtime already validated the JWT
+    claims = jwt.decode(  # nosec B105
         jwt=token,
+        # nosemgrep: python.jwt.security.unverified-jwt-decode.unverified-jwt-decode — signature verification intentionally skipped; AgentCore Runtime already validated the JWT
         options={"verify_signature": False},
         algorithms=["RS256"],
     )
