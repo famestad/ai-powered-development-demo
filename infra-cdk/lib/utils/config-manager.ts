@@ -49,11 +49,17 @@ export class ConfigManager {
   private _loadConfig(configFile: string): AppConfig {
     let configPath: string
 
+    // Uses the specified configFile if the file exists
+    // otherwise fallsback to existing behavior where the configFile should be
+    // named config.yaml and be in the infra-cdk directory. Throws an error if the
+    // configFile does not exist and is not the default "config.yaml"
     if (fs.existsSync(configFile)) {
       configPath = configFile
     } else {
+      if (path.basename(configFile) !== "config.yaml") {
+        throw new Error(`Configuration file '${configFile}' not found.`)
+      }
       const defaultConfigPath = path.join(__dirname, "..", "..", configFile)
-      console.warn(`WARNING: Using '${defaultConfigPath}' instead.`)
       configPath = defaultConfigPath
     }
 
