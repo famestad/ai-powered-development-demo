@@ -1,16 +1,18 @@
-# Fullstack AgentCore Solution Template (FAST)
+# AnyGov Agentic (AA)
 
-_Author's note: for the official name for this solution is the "Fullstack Solution Template for Agentcore" but it is referred to throughout this code base as FAST for convenience._
+> **Note:** This is a demo project showcasing the use of AI in your development lifecycle.
 
-The Fullstack AgentCore Solution Template (FAST) is a starter project repository that enables users (delivery scientists and engineers) to quickly deploy a secured, web-accessible React frontend connected to an AgentCore backend. Its purpose is to accelerate building full stack applications on AgentCore from weeks to days by handling the undifferentiated heavy lifting of infrastructure setup and to enable vibe-coding style development on top. The only central dependency of FAST is AgentCore. It is agnostic to agent SDK (Strands, LangGraph, etc) and to coding assistant platforms (Q, Kiro, Cline, Claude Code, etc).
+_This project is based on the Fullstack AgentCore Solution Template (FAST). For the original template, FAST is referred to throughout this code base for convenience._
 
-FAST is designed with security and vibe-codability as primary tenets. Best practices and knowledge from experts are codified in _documentation_ in this repository rather than in _code_. By including this documentation in an AI coding assistant's context, or by instructing the AI coding assistant to leverage best practices and code snippets found in the documentation, delivery scientists and developers can quickly vibe-build AgentCore applications for any use case. AI coding assistants can be used to fully customize the frontend and the infrastructure, enabling scientists to focus the areas where their knowledge is most impactful: the actual prompt engineering and GenAI implementation details.
+AnyGov Agentic (AA) is a demo project repository that enables users (delivery scientists and engineers) to quickly deploy a secured, web-accessible React frontend connected to an AgentCore backend. Its purpose is to demonstrate building full stack applications on AgentCore by handling the undifferentiated heavy lifting of infrastructure setup and to enable vibe-coding style development on top. The only central dependency is AgentCore. It is agnostic to agent SDK (Strands, LangGraph, etc) and to coding assistant platforms (Q, Kiro, Cline, Claude Code, etc).
 
-With FAST as a starting point and development framework, delivery scientists and engineers will accelerate their development process and deliver production quality AgentCore code following architecture and security best practices without having to learn any frontend or infrastructure code.
+AA is designed with security and vibe-codability as primary tenets. Best practices and knowledge from experts are codified in _documentation_ in this repository rather than in _code_. By including this documentation in an AI coding assistant's context, or by instructing the AI coding assistant to leverage best practices and code snippets found in the documentation, delivery scientists and developers can quickly vibe-build AgentCore applications for any use case. AI coding assistants can be used to fully customize the frontend and the infrastructure, enabling scientists to focus the areas where their knowledge is most impactful: the actual prompt engineering and GenAI implementation details.
 
-## FAST Baseline System
+With AA as a starting point and development framework, delivery scientists and engineers will accelerate their development process and deliver production quality AgentCore code following architecture and security best practices without having to learn any frontend or infrastructure code.
 
-FAST comes deployable out-of-the-box with a fully functioning, full-stack application. This application represents starts as a basic multi-turn chat agent where the backend agent has access to tools. **Do not let this deter you, even if your use case is entirely different! If your application requires AgentCore, customizing FAST to any use case is extremely straightforward. That is the intended use of FAST!**
+## AA Baseline System
+
+AA comes deployable out-of-the-box with a fully functioning, full-stack application. This application starts as a basic multi-turn chat agent where the backend agent has access to tools. **Do not let this deter you, even if your use case is entirely different! If your application requires AgentCore, customizing AA to any use case is extremely straightforward. That is the intended use of AA!**
 
 The application is intentionally kept very, very simple to allow developers to easily build up whatever they want on top of the baseline. The tools shipped out of the box include:
 
@@ -25,11 +27,11 @@ The application is intentionally kept very, very simple to allow developers to e
 Try asking the agent to analyze text or execute Python code to see these tools in action.
 
 
-## FAST User Setup
+## AA User Setup
 
-If you are a delivery scientist or engineer who wants to use FAST to build a full stack application, this is the section for you.
+If you are a delivery scientist or engineer who wants to use AA to build a full stack application, this is the section for you.
 
-FAST is designed to be forked and deployed out of the box with a security-approved baseline system working. Your task will be to customize it to create your own full stack application to to do (literally) anything on AgentCore.
+AA is designed to be forked and deployed out of the box with a security-approved baseline system working. Your task will be to customize it to create your own full stack application to do (literally) anything on AgentCore.
 
 Deploying the full stack out-of-the-box FAST baseline system is only a few cdk commands once you have forked the repo, namely: 
 
@@ -47,6 +49,8 @@ See the [deployment guide](docs/DEPLOYMENT.md) for detailed instructions on how 
 > **Terraform alternative:** FAST also supports Terraform for infrastructure deployment. See [`infra-terraform/README.md`](infra-terraform/README.md) for the Terraform deployment guide. We recommend choosing one infrastructure tool and deleting the other directory (`infra-cdk/` or `infra-terraform/`) from your fork to keep things clean.
 
 What comes next? That's up to you, the developer. With your requirements in mind, open up your coding assistant, describe what you'd like to do, and begin. The steering docs in this repository help guide coding assistants with best practices, and encourage them to always refer to the documentation built-in to the repository to make sure you end up building something great.
+
+> **Demo project:** AA is intended to showcase how AI-powered development tools can accelerate your development lifecycle. Explore, experiment, and build!
 
 ## Architecture
 
@@ -68,7 +72,7 @@ The out-of-the-box architecture is shown above. The diagram illustrates the auth
 ## Project Structure
 
 ```
-fullstack-agentcore-solution-template/
+anygov-agentic/
 ├── .amazonq/               # Amazon Q assistant rules
 ├── .github/                # GitHub Actions workflows
 │   └── workflows/
@@ -170,7 +174,7 @@ fullstack-agentcore-solution-template/
 ```
 
 ## DeepWiki
-Have a question about how FAST works? Consider asking DeepWiki!
+Have a question about how AA works? Consider asking DeepWiki!
 
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/awslabs/fullstack-solution-template-for-agentcore)
