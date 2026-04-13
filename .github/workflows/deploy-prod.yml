@@ -1,0 +1,55 @@
+name: Deploy Prod
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::200608916304:role/GitHubActions-CDK-Deploy
+          aws-region: us-west-2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install linters
+        run: pip install ruff
+
+      - name: Lint
+        run: make lint-cicd
+
+      - name: Use prod config
+        run: cp infra-cdk/config.prod.yaml infra-cdk/config.yaml
+
+      - name: Install CDK dependencies
+        working-directory: infra-cdk
+        run: npm ci
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: CDK deploy
+        working-directory: infra-cdk
+        run: npx cdk deploy --all --require-approval never
+
+      - name: Deploy frontend
+        run: python scripts/deploy-frontend.py FAST-prod-stack

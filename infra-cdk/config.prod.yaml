@@ -1,0 +1,6 @@
+stack_name_base: FAST-prod-stack
+
+backend:
+  pattern: strands-single-agent
+  deployment_type: docker
+  network_mode: PUBLIC
