@@ -30,6 +30,10 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
       - name: Install linters
         run: pip install ruff
 
@@ -41,10 +45,6 @@ jobs:
 
       - name: Install CDK dependencies
         working-directory: infra-cdk
-        run: npm ci
-
-      - name: Install frontend dependencies
-        working-directory: frontend
         run: npm ci
 
       - name: CDK deploy
