@@ -20,6 +20,8 @@ jobs:
     permissions:
       id-token: write
       contents: read
+      issues: read
+      pull-requests: read
 
     steps:
       - name: Configure AWS credentials
@@ -28,15 +30,27 @@ jobs:
           role-to-assume: arn:aws:iam::200608916304:role/GitHubActions-ClaudeCode-Bedrock
           aws-region: us-west-2
 
-      - name: Invoke Dispatch Router
+      - name: Fetch full issue context and dispatch
         env:
+          GH_TOKEN: ${{ github.token }}
           COMMENT_BODY: ${{ github.event.comment.body }}
           COMMENT_USER: ${{ github.event.comment.user.login }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
-          ISSUE_TITLE: ${{ github.event.issue.title }}
-          ISSUE_BODY: ${{ github.event.issue.body }}
           REPO: ${{ github.repository }}
         run: |
+          # Fetch full issue details
+          ISSUE_JSON=$(gh api repos/$REPO/issues/$ISSUE_NUMBER)
+          ISSUE_TITLE=$(echo "$ISSUE_JSON" | jq -r '.title')
+          ISSUE_BODY=$(echo "$ISSUE_JSON" | jq -r '.body // ""')
+          ISSUE_LABELS=$(echo "$ISSUE_JSON" | jq -r '[.labels[].name] | join(", ")')
+          ISSUE_ASSIGNEES=$(echo "$ISSUE_JSON" | jq -r '[.assignees[].login] | join(", ")')
+          ISSUE_STATE=$(echo "$ISSUE_JSON" | jq -r '.state')
+
+          # Fetch all comments on the issue
+          COMMENTS=$(gh api repos/$REPO/issues/$ISSUE_NUMBER/comments \
+            --jq '.[] | "[\(.user.login) at \(.created_at)]:\n\(.body)\n"')
+
+          # Build payload with full context
           jq -n \
             --arg source "github" \
             --arg trigger_type "comment_mention" \
@@ -46,6 +60,10 @@ jobs:
             --arg issue_number "$ISSUE_NUMBER" \
             --arg issue_title "$ISSUE_TITLE" \
             --arg issue_body "$ISSUE_BODY" \
+            --arg issue_labels "$ISSUE_LABELS" \
+            --arg issue_assignees "$ISSUE_ASSIGNEES" \
+            --arg issue_state "$ISSUE_STATE" \
+            --arg issue_comments "$COMMENTS" \
             '{
               source: $source,
               trigger_type: $trigger_type,
@@ -55,7 +73,11 @@ jobs:
                 repo: $repo,
                 issue_number: $issue_number,
                 issue_title: $issue_title,
-                issue_body: $issue_body
+                issue_body: $issue_body,
+                issue_labels: $issue_labels,
+                issue_assignees: $issue_assignees,
+                issue_state: $issue_state,
+                issue_comments: $issue_comments
               }
             }' > /tmp/payload.json
 
