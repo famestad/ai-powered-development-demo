@@ -37,7 +37,7 @@ jobs:
           ISSUE_BODY: ${{ github.event.issue.body }}
           REPO: ${{ github.repository }}
         run: |
-          PAYLOAD=$(jq -n \
+          jq -n \
             --arg source "github" \
             --arg trigger_type "comment_mention" \
             --arg body "$COMMENT_BODY" \
@@ -57,13 +57,12 @@ jobs:
                 issue_title: $issue_title,
                 issue_body: $issue_body
               }
-            }')
+            }' > /tmp/payload.json
 
           aws lambda invoke \
             --function-name dispatch-router-dev \
             --invocation-type Event \
-            --payload "$(echo "$PAYLOAD" | base64)" \
-            --cli-binary-format raw-in-base64-out \
+            --payload fileb:///tmp/payload.json \
             --region us-west-2 \
             response.json
 
