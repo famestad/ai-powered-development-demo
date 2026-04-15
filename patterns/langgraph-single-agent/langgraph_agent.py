@@ -2,6 +2,7 @@
 
 import logging
 import os
+import sys
 
 from bedrock_agentcore.runtime import BedrockAgentCoreApp, RequestContext
 from langchain.agents import create_agent
@@ -11,6 +12,10 @@ from tools.gateway import create_gateway_mcp_client
 from utils.auth import extract_user_id_from_context
 
 from tools.code_interpreter import LangGraphCodeInterpreterTools
+
+# Allow importing the shared memory module from patterns/
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from memory.pipeline import MemoryPipeline
 
 logger = logging.getLogger(__name__)
 
@@ -41,8 +46,12 @@ def _create_checkpointer() -> AgentCoreMemorySaver:
     )
 
 
-async def create_langgraph_agent():
-    """Create a LangGraph agent with Gateway tools, Memory, and Code Interpreter."""
+async def create_langgraph_agent(system_prompt: str = SYSTEM_PROMPT):
+    """Create a LangGraph agent with Gateway tools, Memory, and Code Interpreter.
+
+    Args:
+        system_prompt: System prompt to use (may be augmented with citizen context).
+    """
     mcp_client = await create_gateway_mcp_client()
     tools = await mcp_client.get_tools()
 
@@ -54,7 +63,7 @@ async def create_langgraph_agent():
         model=_build_model(),
         tools=tools,
         checkpointer=_create_checkpointer(),
-        system_prompt=SYSTEM_PROMPT,
+        system_prompt=system_prompt,
     )
 
 
@@ -74,7 +83,13 @@ async def invocations(payload, context: RequestContext):
     try:
         user_id = extract_user_id_from_context(context)
 
-        graph = await create_langgraph_agent()
+        # Memory pipeline: extract entities from this message, then inject
+        # accumulated context into the system prompt before the agent runs.
+        pipeline = MemoryPipeline(user_id, session_id)
+        pipeline.process_message(user_query)
+        augmented_prompt = pipeline.inject_context(SYSTEM_PROMPT)
+
+        graph = await create_langgraph_agent(system_prompt=augmented_prompt)
 
         config = {"configurable": {"thread_id": session_id, "actor_id": user_id}}
 

@@ -3,6 +3,7 @@
 import json
 import logging
 import os
+import sys
 
 from bedrock_agentcore.memory.integrations.strands.config import AgentCoreMemoryConfig
 from bedrock_agentcore.memory.integrations.strands.session_manager import (
@@ -15,6 +16,10 @@ from tools.gateway import create_gateway_mcp_client
 from utils.auth import extract_user_id_from_context
 
 from tools.code_interpreter import StrandsCodeInterpreterTools
+
+# Allow importing the shared memory module from patterns/
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from memory.pipeline import MemoryPipeline
 
 logger = logging.getLogger(__name__)
 
@@ -41,8 +46,16 @@ def _create_session_manager(
     )
 
 
-def create_strands_agent(user_id: str, session_id: str) -> Agent:
-    """Create a Strands agent with Gateway tools, memory, and Code Interpreter."""
+def create_strands_agent(
+    user_id: str, session_id: str, system_prompt: str = SYSTEM_PROMPT
+) -> Agent:
+    """Create a Strands agent with Gateway tools, memory, and Code Interpreter.
+
+    Args:
+        user_id: Authenticated user identity from JWT.
+        session_id: Conversation session identifier.
+        system_prompt: System prompt to use (may be augmented with citizen context).
+    """
 
     bedrock_model = BedrockModel(
         model_id="us.anthropic.claude-sonnet-4-5-20250929-v1:0", temperature=0.1
@@ -57,7 +70,7 @@ def create_strands_agent(user_id: str, session_id: str) -> Agent:
 
     return Agent(
         name="strands_agent",
-        system_prompt=SYSTEM_PROMPT,
+        system_prompt=system_prompt,
         tools=[gateway_client, code_tools.execute_python_securely],
         model=bedrock_model,
         session_manager=session_manager,
@@ -84,7 +97,14 @@ async def invocations(payload, context: RequestContext):
 
     try:
         user_id = extract_user_id_from_context(context)
-        agent = create_strands_agent(user_id, session_id)
+
+        # Memory pipeline: extract entities from this message, then inject
+        # accumulated context into the system prompt before the agent runs.
+        pipeline = MemoryPipeline(user_id, session_id)
+        pipeline.process_message(user_query)
+        augmented_prompt = pipeline.inject_context(SYSTEM_PROMPT)
+
+        agent = create_strands_agent(user_id, session_id, system_prompt=augmented_prompt)
 
         async for event in agent.stream_async(user_query):
             yield json.loads(json.dumps(dict(event), default=str))
