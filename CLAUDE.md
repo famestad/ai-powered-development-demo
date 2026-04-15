@@ -18,9 +18,10 @@ Pulse (@pulse) is the project management agent. It manages Asana tasks, creates
 GitHub issues, and coordinates work across the team.
 
 When you complete work on a GitHub issue:
-- Comment on the issue with a summary of what you did
+- Create a pull request with your changes. Include "Closes #N" in the PR body.
+- Comment on the issue with a summary of what you did and a link to the PR
 - @mention @pulse to review your work and decide next steps
-- Example: "@pulse implementation complete — please review and assign next task"
+- Example: "@pulse implementation complete — PR created: [link]. Please review and assign next task"
 
 When you need a decision or approval before proceeding:
 - Do NOT proceed without approval on non-trivial architectural decisions
