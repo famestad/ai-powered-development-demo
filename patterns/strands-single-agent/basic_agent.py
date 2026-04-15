@@ -13,6 +13,7 @@ from strands import Agent
 from strands.models import BedrockModel
 from tools.gateway import create_gateway_mcp_client
 from utils.auth import extract_user_id_from_context
+from utils.context_injection import build_system_prompt, load_citizen_context
 
 from tools.code_interpreter import StrandsCodeInterpreterTools
 
@@ -44,6 +45,10 @@ def _create_session_manager(
 def create_strands_agent(user_id: str, session_id: str) -> Agent:
     """Create a Strands agent with Gateway tools, memory, and Code Interpreter."""
 
+    # Load citizen context and build augmented system prompt
+    citizen_context = load_citizen_context(session_id=session_id, user_id=user_id)
+    system_prompt = build_system_prompt(SYSTEM_PROMPT, citizen_context)
+
     bedrock_model = BedrockModel(
         model_id="us.anthropic.claude-sonnet-4-5-20250929-v1:0", temperature=0.1
     )
@@ -57,7 +62,7 @@ def create_strands_agent(user_id: str, session_id: str) -> Agent:
 
     return Agent(
         name="strands_agent",
-        system_prompt=SYSTEM_PROMPT,
+        system_prompt=system_prompt,
         tools=[gateway_client, code_tools.execute_python_securely],
         model=bedrock_model,
         session_manager=session_manager,

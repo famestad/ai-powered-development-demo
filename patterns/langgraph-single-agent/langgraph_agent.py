@@ -9,6 +9,7 @@ from langchain_aws import ChatBedrock
 from langgraph_checkpoint_aws import AgentCoreMemorySaver
 from tools.gateway import create_gateway_mcp_client
 from utils.auth import extract_user_id_from_context
+from utils.context_injection import build_system_prompt, load_citizen_context
 
 from tools.code_interpreter import LangGraphCodeInterpreterTools
 
@@ -41,8 +42,14 @@ def _create_checkpointer() -> AgentCoreMemorySaver:
     )
 
 
-async def create_langgraph_agent():
-    """Create a LangGraph agent with Gateway tools, Memory, and Code Interpreter."""
+async def create_langgraph_agent(system_prompt: str = SYSTEM_PROMPT):
+    """Create a LangGraph agent with Gateway tools, Memory, and Code Interpreter.
+
+    Args:
+        system_prompt: The system prompt to use. Defaults to SYSTEM_PROMPT,
+            but callers should pass an augmented prompt from build_system_prompt()
+            when citizen context is available.
+    """
     mcp_client = await create_gateway_mcp_client()
     tools = await mcp_client.get_tools()
 
@@ -54,7 +61,7 @@ async def create_langgraph_agent():
         model=_build_model(),
         tools=tools,
         checkpointer=_create_checkpointer(),
-        system_prompt=SYSTEM_PROMPT,
+        system_prompt=system_prompt,
     )
 
 
@@ -74,7 +81,11 @@ async def invocations(payload, context: RequestContext):
     try:
         user_id = extract_user_id_from_context(context)
 
-        graph = await create_langgraph_agent()
+        # Load citizen context and build augmented system prompt
+        citizen_context = load_citizen_context(session_id=session_id, user_id=user_id)
+        system_prompt = build_system_prompt(SYSTEM_PROMPT, citizen_context)
+
+        graph = await create_langgraph_agent(system_prompt=system_prompt)
 
         config = {"configurable": {"thread_id": session_id, "actor_id": user_id}}
 
