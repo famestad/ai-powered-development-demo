@@ -39,5 +39,6 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           use_bedrock: "true"
+          branch_prefix: "review-disabled/"
           claude_args: |
             --model us.anthropic.claude-opus-4-6-v1
