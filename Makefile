@@ -56,3 +56,4 @@ lint-cicd:
 		exit 1; \
 	fi
 	@echo -e "$(GREEN)All code quality checks passed!$(NC)"
+
