@@ -13,6 +13,7 @@ from strands import Agent
 from strands.models import BedrockModel
 from tools.gateway import create_gateway_mcp_client
 from utils.auth import extract_user_id_from_context
+from utils.prompt import build_system_prompt
 
 from tools.code_interpreter import StrandsCodeInterpreterTools
 
@@ -20,10 +21,7 @@ logger = logging.getLogger(__name__)
 
 app = BedrockAgentCoreApp()
 
-SYSTEM_PROMPT = (
-    "You are a helpful assistant with access to tools via the Gateway and Code Interpreter. "
-    "When asked about your tools, list them and explain what they do."
-)
+SYSTEM_PROMPT = build_system_prompt()
 
 
 def _create_session_manager(
