@@ -65,7 +65,7 @@ Issues = "https://github.com/aws-samples/fullstack-agentcore-solution-template/i
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["gateway*", "scripts*"]
+include = ["gateway*", "scripts*", "tools*"]
 exclude = ["tests*", "infra-cdk*", "frontend*", "patterns*"]
 
 [tool.ruff]
