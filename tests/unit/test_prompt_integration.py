@@ -114,4 +114,7 @@ class TestAgentFilesUseSharedPrompt:
         assert "SYSTEM_PROMPT = build_system_prompt()" in langgraph_source
 
     def test_langgraph_no_hardcoded_prompt(self, langgraph_source):
-        assert "You are a helpful assistant with access to tools" not in langgraph_source
+        assert (
+            "You are a helpful assistant with access to tools"
+            not in langgraph_source
+        )
