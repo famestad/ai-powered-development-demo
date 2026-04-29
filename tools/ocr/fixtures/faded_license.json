@@ -1,0 +1,17 @@
+[
+  {"text": "DRIVER LICENSE", "bbox": [118, 28, 285, 38], "confidence": 0.82},
+  {"text": "USA", "bbox": [448, 28, 55, 28], "confidence": 0.75},
+  {"text": "DL 9876543", "bbox": [48, 78, 205, 28], "confidence": 0.68},
+  {"text": "CLASS C", "bbox": [298, 78, 105, 28], "confidence": 0.71},
+  {"text": "EXP 08/20/2026", "bbox": [48, 118, 205, 28], "confidence": 0.65},
+  {"text": "DOB 11/05/1985", "bbox": [298, 118, 205, 28], "confidence": 0.70},
+  {"text": "LN JOHNSON", "bbox": [48, 168, 165, 28], "confidence": 0.73},
+  {"text": "FN ROBERT", "bbox": [248, 168, 135, 28], "confidence": 0.69},
+  {"text": "456 OAK ST", "bbox": [48, 208, 200, 28], "confidence": 0.60},
+  {"text": "MAPLEWOOD OH 44000", "bbox": [48, 238, 285, 28], "confidence": 0.58},
+  {"text": "SEX M", "bbox": [48, 278, 85, 22], "confidence": 0.72},
+  {"text": "HGT 5-11", "bbox": [168, 278, 105, 22], "confidence": 0.55},
+  {"text": "WGT 185", "bbox": [308, 278, 95, 22], "confidence": 0.52},
+  {"text": "EYES GRN", "bbox": [48, 308, 115, 22], "confidence": 0.61},
+  {"text": "HAIR BRN", "bbox": [198, 308, 115, 22], "confidence": 0.59}
+]

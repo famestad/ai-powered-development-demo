@@ -1,0 +1,18 @@
+[
+  {
+    "name": "ocr_extract_text",
+    "description": "Extract text blocks with bounding-box geometry from a normalized license image using OCR.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "image_base64": {
+          "type": "string",
+          "description": "Base64-encoded normalized image bytes (PNG or JPEG)"
+        }
+      },
+      "required": [
+        "image_base64"
+      ]
+    }
+  }
+]

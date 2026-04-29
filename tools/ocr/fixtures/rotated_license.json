@@ -1,0 +1,19 @@
+[
+  {"text": "DRIVER LICENSE", "bbox": [125, 35, 275, 32], "confidence": 0.91},
+  {"text": "USA", "bbox": [452, 35, 48, 23], "confidence": 0.88},
+  {"text": "DL 5551234", "bbox": [52, 82, 198, 24], "confidence": 0.85},
+  {"text": "CLASS D", "bbox": [302, 82, 98, 24], "confidence": 0.84},
+  {"text": "EXP 01/30/2027", "bbox": [52, 122, 198, 24], "confidence": 0.87},
+  {"text": "DOB 07/14/1978", "bbox": [302, 122, 198, 24], "confidence": 0.86},
+  {"text": "LN GARCIA", "bbox": [52, 172, 155, 24], "confidence": 0.90},
+  {"text": "FN MARIA", "bbox": [252, 172, 128, 24], "confidence": 0.89},
+  {"text": "789 ELM BLVD APT 4", "bbox": [52, 212, 300, 24], "confidence": 0.78},
+  {"text": "MAPLEWOOD OH 44001", "bbox": [52, 242, 278, 24], "confidence": 0.80},
+  {"text": "SEX F", "bbox": [52, 282, 78, 20], "confidence": 0.88},
+  {"text": "HGT 5-04", "bbox": [172, 282, 98, 20], "confidence": 0.76},
+  {"text": "WGT 130", "bbox": [312, 282, 88, 20], "confidence": 0.74},
+  {"text": "EYES BRN", "bbox": [52, 312, 108, 20], "confidence": 0.82},
+  {"text": "HAIR BLK", "bbox": [202, 312, 108, 20], "confidence": 0.81},
+  {"text": "ISS 01/30/2023", "bbox": [52, 352, 198, 24], "confidence": 0.83},
+  {"text": "RESTRICTIONS B", "bbox": [302, 352, 188, 24], "confidence": 0.77}
+]

@@ -1,0 +1,20 @@
+[
+  {"text": "DRIVER LICENSE", "bbox": [120, 30, 280, 35], "confidence": 0.99},
+  {"text": "USA", "bbox": [450, 30, 50, 25], "confidence": 0.98},
+  {"text": "DL 1234567", "bbox": [50, 80, 200, 25], "confidence": 0.97},
+  {"text": "CLASS C", "bbox": [300, 80, 100, 25], "confidence": 0.96},
+  {"text": "EXP 12/15/2028", "bbox": [50, 120, 200, 25], "confidence": 0.95},
+  {"text": "DOB 03/22/1990", "bbox": [300, 120, 200, 25], "confidence": 0.95},
+  {"text": "LN SMITH", "bbox": [50, 170, 150, 25], "confidence": 0.98},
+  {"text": "FN JANE", "bbox": [250, 170, 120, 25], "confidence": 0.97},
+  {"text": "123 MAPLE AVE", "bbox": [50, 210, 250, 25], "confidence": 0.94},
+  {"text": "MAPLEWOOD OH 44000", "bbox": [50, 240, 280, 25], "confidence": 0.93},
+  {"text": "SEX F", "bbox": [50, 280, 80, 20], "confidence": 0.96},
+  {"text": "HGT 5-06", "bbox": [170, 280, 100, 20], "confidence": 0.92},
+  {"text": "WGT 140", "bbox": [310, 280, 90, 20], "confidence": 0.91},
+  {"text": "EYES BRN", "bbox": [50, 310, 110, 20], "confidence": 0.93},
+  {"text": "HAIR BLK", "bbox": [200, 310, 110, 20], "confidence": 0.92},
+  {"text": "ISS 06/01/2024", "bbox": [50, 350, 200, 25], "confidence": 0.94},
+  {"text": "RESTRICTIONS NONE", "bbox": [300, 350, 200, 25], "confidence": 0.90},
+  {"text": "ENDORSEMENTS NONE", "bbox": [50, 385, 220, 25], "confidence": 0.89}
+]
