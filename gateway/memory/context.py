@@ -17,9 +17,7 @@ class CitizenContext(BaseModel):
     citizen_name: Optional[str] = Field(
         default=None, description="Full name of the citizen"
     )
-    address: Optional[str] = Field(
-        default=None, description="Citizen's address"
-    )
+    address: Optional[str] = Field(default=None, description="Citizen's address")
     case_number: Optional[str] = Field(
         default=None, description="Reference case or ticket number"
     )

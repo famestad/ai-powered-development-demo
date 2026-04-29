@@ -53,9 +53,7 @@ class TestMemoryAdapterInit:
 
 class TestSaveContext:
     def test_save_creates_event(self, adapter, mock_boto_client):
-        mock_boto_client.create_event.return_value = {
-            "event": {"eventId": "evt-123"}
-        }
+        mock_boto_client.create_event.return_value = {"event": {"eventId": "evt-123"}}
         ctx = CitizenContext(citizen_name="Jane", department="DMV")
         event_id = adapter.save_context(ctx)
 
@@ -69,15 +67,13 @@ class TestSaveContext:
 
         payload_text = call_kwargs["payload"][0]["conversational"]["content"]["text"]
         assert payload_text.startswith(_CONTEXT_PREFIX)
-        json_part = payload_text[len(_CONTEXT_PREFIX):]
+        json_part = payload_text[len(_CONTEXT_PREFIX) :]
         restored = CitizenContext.model_validate_json(json_part)
         assert restored.citizen_name == "Jane"
         assert restored.department == "DMV"
 
     def test_save_preserves_all_fields(self, adapter, mock_boto_client):
-        mock_boto_client.create_event.return_value = {
-            "event": {"eventId": "evt-456"}
-        }
+        mock_boto_client.create_event.return_value = {"event": {"eventId": "evt-456"}}
         ctx = CitizenContext(
             citizen_name="John",
             address="789 Elm St",
@@ -89,12 +85,11 @@ class TestSaveContext:
         )
         adapter.save_context(ctx)
 
-        payload_text = (
-            mock_boto_client.create_event.call_args.kwargs["payload"][0]
-            ["conversational"]["content"]["text"]
-        )
+        payload_text = mock_boto_client.create_event.call_args.kwargs["payload"][0][
+            "conversational"
+        ]["content"]["text"]
         restored = CitizenContext.model_validate_json(
-            payload_text[len(_CONTEXT_PREFIX):]
+            payload_text[len(_CONTEXT_PREFIX) :]
         )
         assert restored == ctx
 

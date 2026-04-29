@@ -49,9 +49,7 @@ class MemoryAdapter:
                 "memory_id must be provided or set via the MEMORY_ID environment variable"
             )
         self._region = region_name or os.environ.get("AWS_DEFAULT_REGION", "us-east-1")
-        self._client = boto3.client(
-            "bedrock-agentcore", region_name=self._region
-        )
+        self._client = boto3.client("bedrock-agentcore", region_name=self._region)
 
     def save_context(self, context: CitizenContext) -> str:
         """Persist *context* as a memory event and return the event ID."""
@@ -93,11 +91,7 @@ class MemoryAdapter:
         # Walk events newest-first looking for our sentinel prefix.
         for event in response.get("events", []):
             for item in event.get("payload", []):
-                text = (
-                    item.get("conversational", {})
-                    .get("content", {})
-                    .get("text", "")
-                )
+                text = item.get("conversational", {}).get("content", {}).get("text", "")
                 if text.startswith(_CONTEXT_PREFIX):
                     json_str = text[len(_CONTEXT_PREFIX) :]
                     try:
