@@ -37,7 +37,7 @@ jobs:
 
       - uses: anthropics/claude-code-action@v1
         with:
-          direct_prompt: |
+          prompt: |
             You are reviewing a pull request on `${{ github.repository }}` (PR #${{ github.event.pull_request.number }}).
 
             ## Primary review axis: ADR alignment
