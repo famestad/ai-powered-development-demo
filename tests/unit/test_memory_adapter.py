@@ -50,6 +50,22 @@ class TestMemoryAdapterInit:
                 )
                 assert adapter.memory_id == "explicit-mem"
 
+    def test_empty_memory_id_arg_falls_back_to_env(self):
+        # Passing memory_id="" should behave identically to passing None —
+        # both are falsy, so the constructor falls back to the env var.
+        # Locks in the `memory_id or env` idiom so an accidental truthy check
+        # refactor doesn't silently change the contract.
+        with patch("gateway.memory.adapter.boto3.client"):
+            with patch.dict("os.environ", {"MEMORY_ID": "env-mem-456"}):
+                adapter = MemoryAdapter(session_id="s", actor_id="a", memory_id="")
+                assert adapter.memory_id == "env-mem-456"
+
+    def test_empty_memory_id_arg_and_no_env_raises(self):
+        with patch("gateway.memory.adapter.boto3.client"):
+            with patch.dict("os.environ", {}, clear=True):
+                with pytest.raises(ValueError, match="memory_id"):
+                    MemoryAdapter(session_id="s", actor_id="a", memory_id="")
+
 
 class TestSaveContext:
     def test_save_creates_event(self, adapter, mock_boto_client):
