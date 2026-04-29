@@ -4,8 +4,6 @@
 
 import json
 
-import pytest
-
 from gateway.memory.context import CitizenContext
 
 

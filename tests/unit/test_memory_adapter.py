@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from gateway.memory.adapter import MemoryAdapter, _CONTEXT_PREFIX
+from gateway.memory.adapter import _CONTEXT_PREFIX, MemoryAdapter
 from gateway.memory.context import CitizenContext
 
 
