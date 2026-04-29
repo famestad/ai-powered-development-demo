@@ -1,4 +1,4 @@
-# Routes @pulse mentions in GitHub comments to the Dispatch Router Lambda.
+# Routes @agent mentions in GitHub comments to the Dispatch Router Lambda.
 # Does NOT intercept @claude mentions — those are handled by claude-code.yml.
 
 name: Agent Dispatch
@@ -12,10 +12,13 @@ on:
 jobs:
   dispatch:
     if: |
-      contains(github.event.comment.body, '@pulse') ||
-      contains(github.event.comment.body, '@greenflag') ||
-      contains(github.event.comment.body, '@lookout') ||
-      contains(github.event.comment.body, '@inkwell')
+      contains(github.event.comment.body, '@workitems') ||
+      contains(github.event.comment.body, '@researcher') ||
+      contains(github.event.comment.body, '@docwriter') ||
+      contains(github.event.comment.body, '@adr') ||
+      contains(github.event.comment.body, '@uat') ||
+      contains(github.event.comment.body, '@merge') ||
+      contains(github.event.comment.body, '@triage')
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -45,15 +48,31 @@ jobs:
           ISSUE_LABELS=$(echo "$ISSUE_JSON" | jq -r '[.labels[].name] | join(", ")')
           ISSUE_ASSIGNEES=$(echo "$ISSUE_JSON" | jq -r '[.assignees[].login] | join(", ")')
           ISSUE_STATE=$(echo "$ISSUE_JSON" | jq -r '.state')
+          IS_PR=$(echo "$ISSUE_JSON" | jq -r 'if .pull_request then "true" else "false" end')
 
-          # Fetch all comments on the issue
+          # Fetch all comments on the issue/PR
           COMMENTS=$(gh api repos/$REPO/issues/$ISSUE_NUMBER/comments \
             --jq '.[] | "[\(.user.login) at \(.created_at)]:\n\(.body)\n"')
+
+          # Resolve agent from @mention in the comment body.
+          # Simple match order — first match wins.
+          AGENT_ID=""
+          for name in workitems researcher docwriter adr uat merge triage; do
+            if echo "$COMMENT_BODY" | grep -qiE "@${name}\b"; then
+              AGENT_ID="$name"
+              break
+            fi
+          done
+          if [ -z "$AGENT_ID" ]; then
+            echo "No known agent mentioned; nothing to do"; exit 0
+          fi
+          echo "resolved agent: $AGENT_ID"
 
           # Build payload with full context
           jq -n \
             --arg source "github" \
             --arg trigger_type "comment_mention" \
+            --arg agent_id "$AGENT_ID" \
             --arg body "$COMMENT_BODY" \
             --arg sender "$COMMENT_USER" \
             --arg repo "$REPO" \
@@ -63,11 +82,14 @@ jobs:
             --arg issue_labels "$ISSUE_LABELS" \
             --arg issue_assignees "$ISSUE_ASSIGNEES" \
             --arg issue_state "$ISSUE_STATE" \
+            --arg is_pr "$IS_PR" \
             --arg issue_comments "$COMMENTS" \
             '{
               source: $source,
               trigger_type: $trigger_type,
+              agent_id: $agent_id,
               body: $body,
+              instruction: $body,
               sender: $sender,
               context: {
                 repo: $repo,
@@ -77,6 +99,7 @@ jobs:
                 issue_labels: $issue_labels,
                 issue_assignees: $issue_assignees,
                 issue_state: $issue_state,
+                is_pr: $is_pr,
                 issue_comments: $issue_comments
               }
             }' > /tmp/payload.json
@@ -88,5 +111,5 @@ jobs:
             --region us-west-2 \
             response.json
 
-          echo "Dispatched to agent fleet"
+          echo "Dispatched $AGENT_ID"
           cat response.json
